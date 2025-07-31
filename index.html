@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=375, user-scalable=no" />
+  <title>PayPal Balance</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      margin: 0;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 375px;
+      background: #fff;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .paypal-logo {
+      font-weight: bold;
+      font-size: 20px;
+      color: #0070ba;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .balance-section {
+      margin-top: 20px;
+    }
+
+    .balance-title {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+
+    .balance-amount {
+      font-size: 32px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .send-request {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .send-request button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .send-btn {
+      background-color: #0070ba;
+      color: #fff;
+    }
+
+    .request-btn {
+      background-color: #e1e1e1;
+      color: #000;
+    }
+
+    .quick-actions {
+      margin-top: 20px;
+    }
+
+    .quick-actions-title {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .action {
+      background-color: #f2f2f2;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .recent {
+      margin-top: 25px;
+    }
+
+    .recent h4 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #222;
+    }
+
+    .activity {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .activity-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9f9f9;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .activity-item span:first-child {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .activity-item span:last-child {
+      font-weight: bold;
+      color: #d70000;
+    }
+
+    .date {
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div class="paypal-logo">PayPal</div>
+      <img src="https://randomuser.me/api/portraits/men/75.jpg" class="user-avatar" alt="User" />
+    </div>
+
+    <div class="balance-section">
+      <div class="balance-title">PayPal balance</div>
+      <div class="balance-amount" id="balance">€15,300,510.00</div>
+
+      <div class="send-request">
+        <button class="send-btn" onclick="sendMoney()">Send</button>
+        <button class="request-btn" onclick="alert('Request feature not available in demo.')">Request</button>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-actions-title">Quick actions</div>
+      <div class="actions">
+        <div class="action">
+          <span>Pay in store</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="action">
+          <span>Transfer to bank</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area" style="margin-top: 20px;">
+      <label>Recipient (@username)</label>
+      <input type="text" id="recipient" placeholder="@example" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc;" />
+      <label style="margin-top: 10px;">Amount (€)</label>
+      <input type="number" id="amount" placeholder="900" style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 6px; border: 1px solid #ccc;" />
+    </div>
+
+    <div class="recent">
+      <h4>Recent activity</h4>
+      <div class="activity" id="activity-log">
+        <div class="activity-item">
+          <div>
+            <span>@lucyion</span><br/>
+            <span class="date">01/08/2025</span>
+          </div>
+          <span>€900.00</span>
+        </div>
+        <div class="activity-item">
+          <div>
+            <span>@janzen22</span><br/>
+            <span class="date">01/08/2025</span>
+          </div>
+          <span>€900.00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let balance = 15300510.00;
+
+    function updateBalance() {
+      const balanceDisplay = document.getElementById("balance");
+      balanceDisplay.innerText = `€${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+    }
+
+    function sendMoney() {
+      const recipient = document.getElementById("recipient").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value);
+      const log = document.getElementById("activity-log");
+
+      if (!recipient.startsWith("@") || recipient.length < 2 || isNaN(amount) || amount <= 0 || amount > balance) {
+        alert("Enter a valid recipient and amount.");
+        return;
+      }
+
+      balance -= amount;
+      updateBalance();
+
+      const newItem = document.createElement("div");
+      newItem.className = "activity-item";
+      const date = new Date().toLocaleDateString("en-GB");
+
+      newItem.innerHTML = `
+        <div>
+          <span>${recipient}</span><br/>
+          <span class="date">${date}</span>
+        </div>
+        <span>€${amount.toFixed(2)}</span>
+      `;
+
+      log.prepend(newItem);
+
+      alert(`You sent €${amount.toFixed(2)} to ${recipient}`);
+
+      document.getElementById("recipient").value = "";
+      document.getElementById("amount").value = "";
+    }
+
+    updateBalance();
+  </script>
+</body>
+</html>
